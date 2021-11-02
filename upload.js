@@ -18,7 +18,7 @@ button.onclick = function(){
       })
       .on('end',function() {
         //do something with csvData
-        console.log(csvData);
+        console.print(csvData);
       });
 }
 
