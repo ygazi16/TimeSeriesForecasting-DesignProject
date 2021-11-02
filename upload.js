@@ -1,17 +1,20 @@
-  <input class="form-control form-control-lg" id="formFileLg" type="file" />
-  const fs = require("fs");
-  const mysql = require("mysql");
-  const fastcsv = require("fast-csv");
-
-  let stream = fs.createReadStream("formFileLg");
-  let csvData = [];
-  let csvStream = fastcsv
-    .parse()
-    .on("data", function(data) {
-      csvData.push(data);
+const path = "file:///C:/Users/ASUS/OneDrive/Desktop/upload/main.html";
+var fs = require('fs');
+var parse = require('csv-parse');
+var csvData= document.getElementById("formFileLg");
+fs.createReadStream(req.file.path)
+    .pipe(parse({delimiter: ':'}))
+    .on('data', function(csvrow) {
+        console.log(csvrow);
+        //do something with csvrow
+        csvData.push(csvrow);
     })
-    .on("end", function() {
-      // remove the first line: header
-      csvData.shift();
+    .on('end',function() {
+      //do something with csvData
+      console.log(csvData);
+    });
+const main = document.querySelector("#main");
 
-window.alert(csvData);
+main.addEventListener("click", () => {
+  window.location.href =  "file:///C:/Users/ASUS/OneDrive/Desktop/upload/main.html";
+  });
