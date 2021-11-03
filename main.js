@@ -6,9 +6,13 @@ const closeBtn = document.querySelector(".close-btn");
 
 const models = document.querySelector("#models");
 const upload = document.querySelector("#upload");
-
+const signin = document.querySelector("#signin");
 
 upload.addEventListener("click", () =>  {
+  window.location.href = path;
+});
+
+signin.addEventListener("click", () =>  {
   window.location.href = path;
 });
 
