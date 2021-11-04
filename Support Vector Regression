@@ -1,4 +1,4 @@
-ates_df = df.copy()
+dates_df = df.copy()
 dates_df = dates_df.reset_index()
 org_dates = dates_df['DATE']
 
