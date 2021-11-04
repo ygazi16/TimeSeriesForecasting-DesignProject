@@ -1,0 +1,23 @@
+ates_df = df.copy()
+dates_df = dates_df.reset_index()
+org_dates = dates_df['DATE']
+
+# Support Vector Regression
+dates = df['DATE']
+costs = df['COST']
+
+print(dates)
+# Convert to 1d Vector
+dates = np.reshape(dates, (len(dates), -1))
+costs = np.reshape(costs, (len(costs), -1))
+
+svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+svr_rbf.fit(dates, costs)
+
+plt.figure(figsize=(12, 6))
+plt.plot(dates, costs, color='black', label='Data')
+plt.plot(org_dates, svr_rbf.predict(dates), color='red', label='RBF model')
+plt.xlabel('Date')
+plt.ylabel('Costs')
+plt.legend()
+plt.show()
