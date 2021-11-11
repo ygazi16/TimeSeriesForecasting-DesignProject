@@ -1,6 +1,6 @@
 # TimeSeriesForecasting-DesignProject
 Please enter the following link to see our on building process web-page:
-https://ygazi16.github.io/TimeSeriesForecasting-DesignProject/main.html
+https://ygazi16.github.io/TimeSeriesForecasting-DesignProject/index.html
 TA's:
 metocusu
 MKorkmaz61
