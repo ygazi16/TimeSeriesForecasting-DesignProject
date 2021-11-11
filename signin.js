@@ -19,10 +19,15 @@ passport.use(new GoogleStrategy({
   console.log(accessToken);
 } ));
 
+app.get('/auth/google',
+passport.authenticate('google', {
+  scope: ['profile', 'email']
+})
+);
 
 //{"web":{"client_id":"511950486271-tuege6cfons5v671idgt2crhcgijvt52.apps.googleusercontent.com","project_id":"tsf-designproject","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"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","redirect_uris":["http://localhost:5000/auth/google/callback"],"javascript_origins":["http://127.0.0.1:3000"]}}
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000 || 3000;
 app.listen(PORT);
 
 
