@@ -4,72 +4,137 @@ from datetime import timedelta
 from datetime import *
 import numpy as np
 from scipy import stats
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import MinMaxScaler
-import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.svm import SVR
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.vector_ar.vecm import coint_johansen
+from statsmodels.tsa.vector_ar.var_model import VAR
+from math import sqrt
+from sklearn.metrics import mean_squared_error
 
-df = pd.read_csv("../../Desktop/energy_data.csv")
+raw_df = pd.read_csv("wind_data.csv")
+raw_df
+if ((raw_df.duplicated()).sum() > 0):
+    print("There are:", (raw_df.duplicated()).sum(), "duplicates.")
+    raw_df.drop_duplicates(inplace=True)
 
-df.info()
+raw_df
 
-del df["NOTES"]
+raw_df.info()
 
-df['DATE'] = pd.to_datetime(df['DATE'], format='%m/%d/%Y')
-df['START TIME'] = pd.to_datetime(df['START TIME'], format='%H:%M')
-df['END TIME'] = pd.to_datetime(df['END TIME'], format='%H:%M')
-df['START TIME'] = df['START TIME'].dt.strftime('%H:%M:%S')
-df['END TIME'] = df['END TIME'].dt.strftime('%H:%M:%S')
-df.sort_values(by=['DATE', "START TIME"], inplace=True)
-filled_column = pd.concat([df.ffill(), df.bfill()]).groupby(level=0).mean()
-df["USAGE"] = filled_column
-if (df.duplicated()).sum() > 0:
+
+def convert_to_datetime(df):
+    try:
+        df['Date'] = pd.to_datetime(df['Date'], format='%m/%d/%Y')
+    except:
+        pass
+
+    try:
+        df['Date'] = pd.to_datetime(df['Date'], format='%Y/%m/%d')
+    except:
+        pass
+
+    try:
+        df['Date'] = pd.to_datetime(df['Date'], format='%Y/%d/%m')
+    except:
+        pass
+
+    try:
+        df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+    except:
+        pass
+
+    try:
+        df['Date'] = pd.to_datetime(df['Date'], format='%d/%Y/%m')
+    except:
+        pass
+
+    try:
+        df['Date'] = pd.to_datetime(df['Date'], format='%m/%Y/%d')
+    except:
+        pass
+
+
+convert_to_datetime(raw_df)
+raw_df.info()
+raw_df.iloc[:, 0]
+
+# combining data set
+numeric_df = raw_df._get_numeric_data()
+df = pd.concat([raw_df.iloc[:, 0], numeric_df], axis=1)
+df
+
+if ((df.duplicated()).sum() > 0):
     print("There are:", (df.duplicated()).sum(), "duplicates.")
     df.drop_duplicates(inplace=True)
+df
+df.sort_values(by=['Date'], inplace=True)
+print(df)
 
-Q1 = np.percentile(df['USAGE'], 3, interpolation='midpoint')
+df = df.fillna(method='ffill').fillna(method='bfill')
 
-Q3 = np.percentile(df['USAGE'], 97, interpolation='midpoint')
-IQR = Q3 - Q1
+# # Implementing Models
 
-# Upper bound
-upper = np.where(df['USAGE'] >= (Q3 + 1.5 * IQR))
-# Lower bound
-lower = np.where(df['USAGE'] <= (Q1 - 1.5 * IQR))
+x = df.iloc[:, :-1]
+y = df.iloc[:, -1]
 
-print("There are:", len(upper[0]), "outliers in upper bound.")
-print("There are:", len(lower[0]), "outliers in lower bound.")
+print(x)
+print(y)
 
-print("Max value for Usage is:", df["USAGE"].max())
-print("Min value for Usage is:", df["USAGE"].min())
+# Vector Auto Regression VAR
 
-scaler = MinMaxScaler()
-df['Usage_scaled'] = scaler.fit_transform(df['USAGE'].values.reshape(-1, 1))
+x = df.iloc[:, 1:2].values
+y = df.iloc[:, -1].values
+y = y.reshape(len(y), 1)
 
-df.info()
-
-print(df['DATE'].ndim)
-
-X = df.iloc[:, 1:2].values
-Y = df.iloc[:, 6].values
-
-
-from sklearn.preprocessing import StandardScaler
-
-sc_X = StandardScaler()
+sc = StandardScaler()
+x = sc.fit_transform(x)
 sc_y = StandardScaler()
-X = sc_X.fit_transform(X)
-Y = sc_y.fit_transform(Y)
-regressor = SVR(kernel='rbf')
-regressor.fit(X, Y)
+y = sc_y.fit_transform(y)
 
-y_pred = regressor.predict(6.5)
-y_pred = sc_y.inverse_transform(y_pred)
+r = SVR(kernel="rbf")
+r.fit(x, y)
+print(sc_y.inverse_transform(r.predict(sc.transform([[6.5]]))))
 
-X_grid = np.arange(min(X), max(X), 0.01)
+last_col_name = df.iloc[:, -1].name
+plt.scatter(sc.inverse_transform(x), sc_y.inverse_transform(y), color="red")
+plt.plot(sc.inverse_transform(x), sc_y.inverse_transform(r.predict(x)), color="blue")
+plt.title("SVR")
+plt.xlabel("Date")
+plt.ylabel(last_col_name)
+plt.show()
+
+# Vector Auto Regression VAR
+
+
+
+
+# Random Forest
+
+regressor = RandomForestRegressor(n_estimators=100, random_state=0)
+
+# fit the regressor with x and y data
+regressor.fit(x, y)
+Y_pred = regressor.predict(np.array([6.5]).reshape(1, 1))  # test the output by changing values
+
+X_grid = np.arange(min(x), max(x), 0.01)
+
+# reshape for reshaping the data into a len(X_grid)*1 array,
+# i.e. to make a column out of the X_grid value
 X_grid = X_grid.reshape((len(X_grid), 1))
-plt.scatter(X, Y, color='red')
-plt.plot(X_grid, regressor.predict(X_grid), color='blue')
-plt.title('Support Vector Regression')
-plt.xlabel('X')
-plt.ylabel('Cost')
+
+# Scatter plot for original data
+plt.scatter(x, y, color='blue')
+
+# plot predicted data
+plt.plot(X_grid, regressor.predict(X_grid),
+         color='green')
+plt.title('Random Forest Regression')
+plt.xlabel('Date')
+plt.ylabel(last_col_name)
 plt.show()
