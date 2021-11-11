@@ -1,0 +1,22 @@
+{
+  "name": "timeseriesforecasting-designproject",
+  "version": "1.0.0",
+  "description": "Please enter the following link to see our on building process web-page: https://ygazi16.github.io/TimeSeriesForecasting-DesignProject/main.html TA's: metocusu MKorkmaz61 asabuncuoglu13 alarazin gorkeygorkem egeonat batuhan-ozyurt",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ygazi16/TimeSeriesForecasting-DesignProject.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ygazi16/TimeSeriesForecasting-DesignProject/issues"
+  },
+  "homepage": "https://github.com/ygazi16/TimeSeriesForecasting-DesignProject#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
