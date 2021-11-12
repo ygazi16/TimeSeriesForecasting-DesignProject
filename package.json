@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ygazi16/TimeSeriesForecasting-DesignProject#readme",
   "dependencies": {
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "passport": "^0.5.0",
     "passport-google-oauth20": "^2.0.0"
