@@ -8,11 +8,11 @@ const models = document.querySelector("#models");
 const upload = document.querySelector("#upload");
 const signin = document.querySelector("#signin");
 
-upload.addEventListener("click", () =>  {
+upload.addEventListener("click", () => {
   window.location.href = path;
 });
 
-signin.addEventListener("click", () =>  {
+signin.addEventListener("click", () => {
   window.location.href = path;
 });
 
