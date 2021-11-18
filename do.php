@@ -20,8 +20,8 @@ if (isset($_POST['uname'])) {
     $result =mysqli_query($con, $sql);
 
     if(mysqli_num_rows($result)==1) {
-        echo "You have successfully logged in";
-        exit();
+        header("Location: upload.html");
+		        exit();
     }
     else {
         echo "Incorrect username or password!";
