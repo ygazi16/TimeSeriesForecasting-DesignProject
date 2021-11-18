@@ -1,27 +1,41 @@
-<?php
-    $username=$_POST['user'];
-    $password=$_POST['pass'];
+<?php 
+session_start();
+$host = "localhost";
+$user = "root";
+$password ="dexter";
+$db = "login";
 
-    $username=stripcslashes($username);
-    $password=stripcslashes($password);
+
+$con= mysqli_connect($host, $user, $password);
+mysqli_select_db($con, $db) or die($connect_error);
+
+if (isset($_POST['uname'])) {
+   
+    
+    $uname = $_POST['uname'];
+    $password = $_POST['password'];
+
+    $sql = "select * from loginform where User='".$uname."' AND Pass='".$password."' limit 1";
+
+    $result =mysqli_query($con, $sql);
+
+    if(mysqli_num_rows($result)==1) {
+        echo "You have successfully logged in";
+        exit();
+    }
+    else {
+        echo "Incorrect username or password!";
+        exit();
+    }
 
     
 
-    $username = mysql_real_escape_string($username);
-    $password = mysql_real_escape_string($password);
+}
 
-    mysql_connect("localhost","root","");
-    mysql_select_db("signin");
+else {
+    echo "incorrect username or password!";
+    exit();
+}
 
-    $result = mysql_query("select * from client where username = '$username' and password = '$password'"); 
-         or die("failed, error".mysql_error());
-    $row = mysql_fetch_array ($result);
-    if($row['username']==$username && $row['password']==$password){
-        echo "successfully signed in ! ".$row['username'];
-    } else {
-        echo "wrong password or username";
-    }
+
 ?>
-
-
-
