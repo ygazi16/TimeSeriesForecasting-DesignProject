@@ -86,9 +86,9 @@ y = df.iloc[:, -1]
 print(x)
 print(y)
 
-# Vector Auto Regression VAR
+# Support Vector Regression SVR
 
-x = df.iloc[:, 1:2].values
+x = df.iloc[:, 1:2].values  # x = df.iloc[:, 1:-1].values
 y = df.iloc[:, -1].values
 y = y.reshape(len(y), 1)
 
@@ -107,10 +107,11 @@ plt.plot(sc.inverse_transform(x), sc_y.inverse_transform(r.predict(x)), color="b
 plt.title("SVR")
 plt.xlabel("Date")
 plt.ylabel(last_col_name)
+plt.savefig("SVR_output.png", dpi=100)
 plt.show()
 
-# Vector Auto Regression VAR
 
+# Vector Auto Regression VAR
 
 
 
@@ -137,4 +138,23 @@ plt.plot(X_grid, regressor.predict(X_grid),
 plt.title('Random Forest Regression')
 plt.xlabel('Date')
 plt.ylabel(last_col_name)
+plt.savefig("RFR_output.png", dpi=100)
 plt.show()
+
+import json
+import base64
+
+SVR_data = {}
+RFR_data = {}
+with open('SVR_output.png', mode='rb') as file:
+    img = file.read()
+SVR_data['img'] = base64.encodebytes(img).decode('utf-8')
+print(json.dumps(SVR_data))
+
+with open('RFR_output.png', mode='rb') as file:
+    img = file.read()
+RFR_data['img'] = base64.encodebytes(img).decode('utf-8')
+
+print(json.dumps(RFR_data))
+
+print(SVR_data == RFR_data)
