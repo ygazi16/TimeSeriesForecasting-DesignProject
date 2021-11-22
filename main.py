@@ -12,10 +12,17 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.pyplot as plt
-from statsmodels.tsa.vector_ar.vecm import coint_johansen
-from statsmodels.tsa.vector_ar.var_model import VAR
-from math import sqrt
-from sklearn.metrics import mean_squared_error
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.arima_model import ARIMA
+
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
+from pmdarima import auto_arima
+import statsmodels.api as sm
+import warnings
+warnings.filterwarnings("ignore")
 
 raw_df = pd.read_csv("wind_data.csv")
 raw_df
@@ -26,7 +33,6 @@ if ((raw_df.duplicated()).sum() > 0):
 raw_df
 
 raw_df.info()
-
 
 def convert_to_datetime(df):
     try:
@@ -63,17 +69,17 @@ def convert_to_datetime(df):
 convert_to_datetime(raw_df)
 raw_df.info()
 raw_df.iloc[:, 0]
-
+raw_df.sort_values(by=['Date'], inplace=True)
+df = raw_df.set_index('Date')
 # combining data set
-numeric_df = raw_df._get_numeric_data()
-df = pd.concat([raw_df.iloc[:, 0], numeric_df], axis=1)
-df
+df = df._get_numeric_data()
 
 if ((df.duplicated()).sum() > 0):
     print("There are:", (df.duplicated()).sum(), "duplicates.")
     df.drop_duplicates(inplace=True)
 df
-df.sort_values(by=['Date'], inplace=True)
+
+
 print(df)
 
 df = df.fillna(method='ffill').fillna(method='bfill')
@@ -114,6 +120,14 @@ plt.show()
 # Vector Auto Regression VAR
 
 
+# ARIMA
+
+'''
+model = ARIMA(df.value, order=(1, 1, 1))
+model_fit = model.fit(disp=0)
+model_fit.plot_predict(dynamic=False)
+plt.show()
+'''
 
 # Random Forest
 
@@ -143,6 +157,7 @@ plt.show()
 
 import json
 import base64
+import urllib
 
 SVR_data = {}
 RFR_data = {}
@@ -158,3 +173,39 @@ RFR_data['img'] = base64.encodebytes(img).decode('utf-8')
 print(json.dumps(RFR_data))
 
 print(SVR_data == RFR_data)
+'''
+import pymysql
+import json
+from flask import Flask, render_template, request, redirect, Response
+app = Flask(__name__)
+
+
+@app.route('/test', methods=["POST", "GET"])
+def getMySQlData():
+    tableData = []
+    connection = pymysql.connect(host='db-auto-performancetesting',
+                                 user='DBUser',
+                                 password='*******',
+                                 database='DbPerformanceTesting',
+                                 port=3302,
+                                 charset='utf8mb4',
+                                 cursorclass=pymysql.cursors.DictCursor)
+
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT TestcaseName, AverageExecutionTimeInSeconds FROM PASPerformanceData WHERE BuildVersion='38.1a141'"
+            cursor.execute(sql)
+            while True:
+                row = cursor.fetchone()
+                if row == None:
+                    break
+                tableData.append(row)
+            tableDataInJson = json.dumps(RFR_data)
+            print(tableDataInJson)
+            return tableDataInJson
+    finally:
+        connection.close()
+
+if __name__ == "__main__":
+    app.run() 
+'''
