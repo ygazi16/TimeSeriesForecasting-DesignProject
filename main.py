@@ -16,12 +16,16 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.arima_model import ARIMA
-
+import json
+import base64
+import urllib
 from pandas.plotting import register_matplotlib_converters
+
 register_matplotlib_converters()
 from pmdarima import auto_arima
 import statsmodels.api as sm
 import warnings
+
 warnings.filterwarnings("ignore")
 
 raw_df = pd.read_csv("wind_data.csv")
@@ -33,6 +37,7 @@ if ((raw_df.duplicated()).sum() > 0):
 raw_df
 
 raw_df.info()
+
 
 def convert_to_datetime(df):
     try:
@@ -71,18 +76,64 @@ raw_df.info()
 raw_df.iloc[:, 0]
 raw_df.sort_values(by=['Date'], inplace=True)
 df = raw_df.set_index('Date')
-# combining data set
+
+# Getting only the numerical data
+
 df = df._get_numeric_data()
+
+# Remove Duplicates
 
 if ((df.duplicated()).sum() > 0):
     print("There are:", (df.duplicated()).sum(), "duplicates.")
     df.drop_duplicates(inplace=True)
 df
 
-
 print(df)
 
+# Filling NaN values
+
 df = df.fillna(method='ffill').fillna(method='bfill')
+
+
+# Extending Dataset
+
+
+def extend_dataset(forecast_days):
+    index_count = 0
+    new_df = df.copy()
+    for column in df.columns:
+        stepwise_fit = auto_arima(df[column], start_p=1, start_q=1,
+                                  max_p=1, max_q=1, m=12,
+                                  start_P=0, seasonal=True,
+                                  d=None, D=1, trace=True,
+                                  error_action='ignore',
+                                  suppress_warnings=True,
+                                  stepwise=True)
+
+        best_params = stepwise_fit.get_params()
+
+        model = sm.tsa.statespace.SARIMAX(df[column],
+                                          order=best_params["order"],
+                                          seasonal_order=best_params["seasonal_order"])
+        result = model.fit()
+
+        forecast = result.predict(start=len(df),
+                                  end=(len(df) - 1) + forecast_days,
+                                  typ='levels').rename('Forecast')
+
+        if (index_count == 0):
+            idx = pd.date_range(df.index.max(), forecast.index.max()).union(df.index)
+            new_df = df.reindex(idx)
+
+        new_df[column] = new_df[column].fillna(forecast)
+        index_count += 1
+    print(new_df)
+
+
+# Useful variables
+
+num_columns = len(df.columns)
+num_rows = df[df.columns[0]].count()
 
 # # Implementing Models
 
@@ -115,7 +166,6 @@ plt.xlabel("Date")
 plt.ylabel(last_col_name)
 plt.savefig("SVR_output.png", dpi=100)
 plt.show()
-
 
 # Vector Auto Regression VAR
 
@@ -154,10 +204,6 @@ plt.xlabel('Date')
 plt.ylabel(last_col_name)
 plt.savefig("RFR_output.png", dpi=100)
 plt.show()
-
-import json
-import base64
-import urllib
 
 SVR_data = {}
 RFR_data = {}
