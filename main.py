@@ -20,7 +20,6 @@ import json
 import base64
 import urllib
 from pandas.plotting import register_matplotlib_converters
-
 register_matplotlib_converters()
 from pmdarima import auto_arima
 import statsmodels.api as sm
@@ -28,7 +27,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-raw_df = pd.read_csv("wind_data.csv")
+raw_df = pd.read_csv("DailyDelhiClimateTrain.csv")
 raw_df
 if ((raw_df.duplicated()).sum() > 0):
     print("There are:", (raw_df.duplicated()).sum(), "duplicates.")
@@ -134,8 +133,18 @@ def extend_dataset(forecast_days):
 
 num_columns = len(df.columns)
 num_rows = df[df.columns[0]].count()
+target_col_name = df.columns[num_columns - 1]
 
-# # Implementing Models
+#
+'''
+df.head()
+decompose_data = seasonal_decompose(df[target_col_name], model="additive")
+decompose_data.plot()
+'''
+
+extend_dataset(50)
+
+# Implementing Models
 
 x = df.iloc[:, :-1]
 y = df.iloc[:, -1]
