@@ -136,21 +136,19 @@ num_rows = df[df.columns[0]].count()
 target_col_name = df.columns[num_columns - 1]
 
 #
-'''
+
 df.head()
 decompose_data = seasonal_decompose(df[target_col_name], model="additive")
 decompose_data.plot()
-'''
+
 
 extend_dataset(50)
 
+# Yigit Can Part
+
+print(df)
+
 # Implementing Models
-
-x = df.iloc[:, :-1]
-y = df.iloc[:, -1]
-
-print(x)
-print(y)
 
 # Support Vector Regression SVR
 
@@ -181,12 +179,6 @@ plt.show()
 
 # ARIMA
 
-'''
-model = ARIMA(df.value, order=(1, 1, 1))
-model_fit = model.fit(disp=0)
-model_fit.plot_predict(dynamic=False)
-plt.show()
-'''
 
 # Random Forest
 
