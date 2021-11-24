@@ -1,10 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>SIGN UP</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Sign In</title>
+	
 </head>
 <body>
+<div class="nav-container">
+    <div class="wrapper">
+      <nav>
+        <div class="logo">
+          TSF
+        </div>
+
+
+        <ul class="nav-items">
+
+
+          <li>
+            <a id=main href="main.html">main</a>
+          </li>
+
+
+          <li>
+            <a id=main href="upload.html">upload</a>
+          </li>
+
+
+
+          <li>
+            <a id=charts href="#">charts</a>
+          </li>
+
+          <li>
+            <a class="nav-btn-container" href="#">
+              <a id=models href="#">models</a>
+              <img class="search-btn" src="images/search-icon.svg" alt="" />
+              <img class="close-btn" src="images/close-icon.svg" alt="" />
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
      <form action="signup-check.php" method="post">
      	<h2>SIGN UP</h2>
      	<?php if (isset($_GET['error'])) { ?>

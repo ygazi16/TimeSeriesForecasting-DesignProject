@@ -69,7 +69,7 @@
 			  <div> 
 			  <button type="submit" class="btn btn-primary btn-block">Log In</button> </div>
             <li>
-              <a id=signin href="signin.html">Don't have an account? : Sign in</a>
+              <a id=signin href="signin.php">Don't have an account? : Sign in</a>
             </li>
             <li>
               <a id=without-signin href="dashboard.html">Continue without an account</a>
