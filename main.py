@@ -1,25 +1,17 @@
+import numpy as np
 import pandas as pd
-from datetime import date
-from datetime import timedelta
-from datetime import *
-import numpy as np
-from scipy import stats
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import MinMaxScaler
-import numpy as np
-from sklearn.svm import SVR
-from sklearn.preprocessing import StandardScaler
-import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.arima_model import ARIMA
+from sklearn.model_selection import train_test_split
+from statsmodels.tsa.api import VAR
+from pandas.plotting import register_matplotlib_converters
 import json
 import base64
 import urllib
-from pandas.plotting import register_matplotlib_converters
+
 register_matplotlib_converters()
 from pmdarima import auto_arima
 import statsmodels.api as sm
@@ -27,74 +19,89 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-raw_df = pd.read_csv("DailyDelhiClimateTrain.csv")
-raw_df
-if ((raw_df.duplicated()).sum() > 0):
-    print("There are:", (raw_df.duplicated()).sum(), "duplicates.")
-    raw_df.drop_duplicates(inplace=True)
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error
+import statsmodels.api as sm
+from statsmodels.tools.eval_measures import mse, rmse
 
-raw_df
+# In[2]:
 
-raw_df.info()
+import pandas as pd
+all_tables = pd.read_html(
+    "https://www.proff.no/regnskap/yara-international-asa/oslo/hovedkontortjenester/IGB6AV410NZ/"
+)
+with pd.ExcelWriter('output.xlsx') as writer:
+    # Last 4 tables has the 'konsernregnskap' data
+    for idx, df in enumerate(all_tables[4:8]):
+        # Remove last column (empty)
+        df = df.drop(df.columns[-1], axis=1)
+        df.to_excel(writer, "Table {}".format(idx))
 
+print(df)
+
+df = pd.read_csv('DailyDelhiClimateTrain.csv',
+                 index_col='date',
+                 parse_dates=True)
+df.head()
+
+
+# Preprocessor
 
 def convert_to_datetime(df):
     try:
-        df['Date'] = pd.to_datetime(df['Date'], format='%m/%d/%Y')
+        df['date'] = pd.to_datetime(df['date'], format='%m/%d/%Y')
     except:
         pass
 
     try:
-        df['Date'] = pd.to_datetime(df['Date'], format='%Y/%m/%d')
+        df['date'] = pd.to_datetime(df['date'], format='%Y/%m/%d')
     except:
         pass
 
     try:
-        df['Date'] = pd.to_datetime(df['Date'], format='%Y/%d/%m')
+        df['date'] = pd.to_datetime(df['date'], format='%Y/%d/%m')
     except:
         pass
 
     try:
-        df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+        df['date'] = pd.to_datetime(df['date'], format='%d/%m/%Y')
     except:
         pass
 
     try:
-        df['Date'] = pd.to_datetime(df['Date'], format='%d/%Y/%m')
+        df['date'] = pd.to_datetime(df['date'], format='%d/%Y/%m')
     except:
         pass
 
     try:
-        df['Date'] = pd.to_datetime(df['Date'], format='%m/%Y/%d')
+        df['date'] = pd.to_datetime(df['date'], format='%m/%Y/%d')
     except:
         pass
 
 
-convert_to_datetime(raw_df)
-raw_df.info()
-raw_df.iloc[:, 0]
-raw_df.sort_values(by=['Date'], inplace=True)
-df = raw_df.set_index('Date')
-
-# Getting only the numerical data
-
+convert_to_datetime(df)
+df.sort_values(by=['date'], inplace=True)
 df = df._get_numeric_data()
-
-# Remove Duplicates
 
 if ((df.duplicated()).sum() > 0):
     print("There are:", (df.duplicated()).sum(), "duplicates.")
     df.drop_duplicates(inplace=True)
-df
-
-print(df)
-
-# Filling NaN values
 
 df = df.fillna(method='ffill').fillna(method='bfill')
 
+# useful variables
 
-# Extending Dataset
+df_columns_length = len(df.columns)
+target_col_name = df.columns[df_columns_length - 1]
+
+decompose_data = seasonal_decompose(df[target_col_name], model="additive")
+decompose_data.plot();
+
+
+# seasonality.plot()
+
+
+# In[15]:
 
 
 def extend_dataset(forecast_days):
@@ -126,133 +133,77 @@ def extend_dataset(forecast_days):
 
         new_df[column] = new_df[column].fillna(forecast)
         index_count += 1
-    print(new_df)
+    return new_df
 
 
-# Useful variables
-
-num_columns = len(df.columns)
-num_rows = df[df.columns[0]].count()
-target_col_name = df.columns[num_columns - 1]
-
-#
-
-df.head()
-decompose_data = seasonal_decompose(df[target_col_name], model="additive")
-decompose_data.plot()
+# In[74]:
 
 
-extend_dataset(50)
+def create_model_prediction(model_name):
+    forecast_days = int(input("How many days you want to predict?: "))
+    new_df = extend_dataset(forecast_days)
 
-# Yigit Can Part
+    columns = new_df.columns
+    train_columns = columns[:-1]
+    test_columns = columns[-1:]
+    X = new_df[train_columns]
+    Y = new_df[test_columns]
 
-print(df)
+    x_train = X[:len(df)]
+    x_test = X[len(df):]
+    y_train = Y[:-forecast_days]
+    y_test = Y[-forecast_days:]
 
-# Implementing Models
+    if (model_name == "linear"):
 
-# Support Vector Regression SVR
+        x_train = sm.add_constant(x_train)
 
-x = df.iloc[:, 1:2].values  # x = df.iloc[:, 1:-1].values
-y = df.iloc[:, -1].values
-y = y.reshape(len(y), 1)
+        results = sm.OLS(y_train, x_train).fit()
 
-sc = StandardScaler()
-x = sc.fit_transform(x)
-sc_y = StandardScaler()
-y = sc_y.fit_transform(y)
+        # sonuclar.summary()
+        x_test = sm.add_constant(x_test)
 
-r = SVR(kernel="rbf")
-r.fit(x, y)
-print(sc_y.inverse_transform(r.predict(sc.transform([[6.5]]))))
+        y_preds = results.predict(x_test)
+        return (y_preds, y_test)
 
-last_col_name = df.iloc[:, -1].name
-plt.scatter(sc.inverse_transform(x), sc_y.inverse_transform(y), color="red")
-plt.plot(sc.inverse_transform(x), sc_y.inverse_transform(r.predict(x)), color="blue")
-plt.title("SVR")
-plt.xlabel("Date")
-plt.ylabel(last_col_name)
-plt.savefig("SVR_output.png", dpi=100)
+    elif (model_name == "var"):
+        model = VAR(new_df)
+        num_columns = len(new_df.columns)
+        results = model.fit(maxlags=num_columns, ic='aic')
+        lag_order = results.k_ar
+        y_preds = results.forecast(new_df.values[-lag_order:], len(x_test))
+        y_preds = y_preds[:, -1]
+        print(y_preds)
+        return (y_preds, y_test)
+
+    else:
+        print("Not a model we have, try: var or linear")
+        return
+
+
+# In[75]:
+
+
+model_type = input("Which model do you want to use?")
+result_prediction, results = create_model_prediction(model_type)
+
+# In[76]:
+
+
+baslik_font = {'family': 'arial', 'color': 'darkred', 'weight': 'bold', 'size': 15}
+eksen_font = {'family': 'arial', 'color': 'darkblue', 'weight': 'bold', 'size': 10}
+plt.figure(dpi=100)
+
+plt.scatter(results, result_prediction)
+plt.plot(results, results, color="red")
+plt.xlabel("Gerçek Değerler", fontdict=eksen_font)
+plt.ylabel("Tahmin edilen Değerler", fontdict=eksen_font)
+plt.title("Ücretler: Gerçek ve tahmin edilen değerler", fontdict=baslik_font)
+plt.savefig("TSF.png", dpi=100)
 plt.show()
 
-# Vector Auto Regression VAR
-
-
-# ARIMA
-
-
-# Random Forest
-
-regressor = RandomForestRegressor(n_estimators=100, random_state=0)
-
-# fit the regressor with x and y data
-regressor.fit(x, y)
-Y_pred = regressor.predict(np.array([6.5]).reshape(1, 1))  # test the output by changing values
-
-X_grid = np.arange(min(x), max(x), 0.01)
-
-# reshape for reshaping the data into a len(X_grid)*1 array,
-# i.e. to make a column out of the X_grid value
-X_grid = X_grid.reshape((len(X_grid), 1))
-
-# Scatter plot for original data
-plt.scatter(x, y, color='blue')
-
-# plot predicted data
-plt.plot(X_grid, regressor.predict(X_grid),
-         color='green')
-plt.title('Random Forest Regression')
-plt.xlabel('Date')
-plt.ylabel(last_col_name)
-plt.savefig("RFR_output.png", dpi=100)
-plt.show()
-
-SVR_data = {}
-RFR_data = {}
-with open('SVR_output.png', mode='rb') as file:
+TSF_data = {}
+with open('TSF.png', mode='rb') as file:
     img = file.read()
-SVR_data['img'] = base64.encodebytes(img).decode('utf-8')
-print(json.dumps(SVR_data))
-
-with open('RFR_output.png', mode='rb') as file:
-    img = file.read()
-RFR_data['img'] = base64.encodebytes(img).decode('utf-8')
-
-print(json.dumps(RFR_data))
-
-print(SVR_data == RFR_data)
-'''
-import pymysql
-import json
-from flask import Flask, render_template, request, redirect, Response
-app = Flask(__name__)
-
-
-@app.route('/test', methods=["POST", "GET"])
-def getMySQlData():
-    tableData = []
-    connection = pymysql.connect(host='db-auto-performancetesting',
-                                 user='DBUser',
-                                 password='*******',
-                                 database='DbPerformanceTesting',
-                                 port=3302,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
-
-    try:
-        with connection.cursor() as cursor:
-            sql = "SELECT TestcaseName, AverageExecutionTimeInSeconds FROM PASPerformanceData WHERE BuildVersion='38.1a141'"
-            cursor.execute(sql)
-            while True:
-                row = cursor.fetchone()
-                if row == None:
-                    break
-                tableData.append(row)
-            tableDataInJson = json.dumps(RFR_data)
-            print(tableDataInJson)
-            return tableDataInJson
-    finally:
-        connection.close()
-
-if __name__ == "__main__":
-    app.run() 
-'''
+TSF_data['img'] = base64.encodebytes(img).decode('utf-8')
+print(json.dumps(TSF_data))
