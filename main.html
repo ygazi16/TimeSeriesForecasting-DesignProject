@@ -2,6 +2,17 @@
 <html lang="en">
 
 <head>
+  <meta charset="utf-8">
+  <title>Main Page TSF Tech</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;900&family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://use.fontawesome.com/releases/v5.13.1/js/all.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -18,7 +29,7 @@
     <div class="wrapper">
       <nav>
         <div class="logo">
-          TFS
+          TSF
         </div>
 
         <ul class="nav-items">
@@ -47,30 +58,211 @@
   <div class="header-container">
     <div class="wrapper">
       <header>
-        <div class="hero-content">
-          <h1>Hi, Welcome to TSF</h1>
-          <p>
-            Lets make your decision making process easier just in 3 steps.
-            Completely Free!, First upload, then choose a model, see the charts and Update your Business Models Accordingly!.</p>
+        <section id="first-page">
+          <div class="container-fluid">
+
+
+
+
+
+            <!-- Title -->
+
+            <div class="row">
+
+              <div class="col-lg-6 first-title">
+                <h3>Lets make your decision making process easier just in 3 steps.
+                  Completely Free!, First upload, then choose a model, see the charts and Update your Business Models Accordingly!.
+                </h3>
+
           <a href="contactus.html">
             Contact Us
           </a>
         </div>
 
-        <div class="hero-image">
-          <img src="images/graph2.png" alt="" />
-          <div class="photo-bg"></div>
-        </div>
+          <div class="col-lg-6 first-title">
 
-        <div class="hero-image">
-          <img src="images/graph1.png" alt="" />
-          <div class="photo-bg"></div>
-        </div>
+              <img class="logo-image1" src="images/logo.jpeg" alt="iphone-mockup">
+          </div>
+
       </header>
 
 
     </div>
   </div>
+  <section id="title">
+    <div class="container-fluid">
+
+
+
+
+
+      <!-- Title -->
+
+      <div class="row">
+
+        <div class="col-lg-6">
+          <h1>Our flagship product, TSF PRO®, was designed from the ground up to be a cost-effective, powerful, but easy to use tool that enables users to measure, analyze, improve and control their service, transactional, and manufacturing
+            processes.
+          </h1>
+          <button type="button" class="btn btn-dark btn-lg download-button1"><i class="fab fa-apple"></i> Download</button>
+          <button type="button" class="btn btn-outline-light btn-lg download-button2"><i class="fab fa-google-play"></i> Download</button>
+        </div>
+
+        <div class="col-lg-6">
+          <img class="title-image" src="images/sales-forecast.png" alt="iphone-mockup">
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Features -->
+
+  <section id="features">
+
+    <div class="row">
+
+      <div class="feature-box col-lg-3">
+        <i class="fas fa-chart-line fa-4x"></i>
+        <h3>Line Chart.</h3>
+        <p>Uses lines to connect individual data points.</p>
+      </div>
+
+      <div class="feature-box col-lg-3">
+        <i class="fas fa-chart-bar fa-4x"></i>
+        <h3>Coloumn Chart</h3>
+        <p>A data visualization where each category is represented by a rectangle, with the height of the rectangle being proportional to the values.</p>
+      </div>
+
+      <div class="feature-box col-lg-3">
+        <i class="fas fa-chart-area fa-4x"></i>
+        <h3>Area Chart</h3>
+        <p>An area chart or area graph displays graphically quantitative data. It is based on the line chart.</p>
+      </div>
+
+      <div class="feature-box col-lg-3">
+        <i class="fas fa-sliders-h fa-4x"></i>
+        <h3>Control Chart</h3>
+        <p>The control chart is a graph used to study how a process changes over time. Data are plotted in time order.</p>
+      </div>
+
+
+    </div>
+
+
+
+
+
+  </section>
+
+
+  <!-- Testimonials -->
+
+  <section id="testimonials">
+
+    <h2>There are several things you should provide related to data to achieve the best forecasting results!</h2>
+
+    <div id="testimonials-carousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              Firstly; You need to sign-up and create an account.
+            </div>
+            <div class="carousel-item">
+              Secondly; You need to upload your time series data in .csv or excel format.
+            </div>
+            <div class="carousel-item">
+              Thirdly; You need to go to your dashboard and examine the ML Models to decide which algorithm works for you!.
+            </div>
+            <div class="carousel-item">
+              Finally; Select your model and visualization technique and press "Run". Your predicted results will appear on the screen.
+            </div>
+          </div>
+          <a class="carousel-control-prev" href="#testimonials-carousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#testimonials-carousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+
+  </section>
+
+
+  <!-- Press -->
+
+  <section id="press">
+    <img src="images/techcrunch.png" alt="tc-logo">
+    <img src="images/tnw.png" alt="tnw-logo">
+    <img src="images/bizinsider.png" alt="biz-insider-logo">
+    <img src="images/mashable.png" alt="mashable-logo">
+
+  </section>
+
+
+  <!-- Pricing -->
+
+  <section id="pricing">
+
+    <h2>A Plan for Every Dog's Needs</h2>
+    <p>Simple and affordable price plans for your and your dog.</p>
+
+
+    <h3>Chihuahua</h3>
+    <h2>Free</h2>
+    <p>5 Matches Per Day</p>
+    <p>10 Messages Per Day</p>
+    <p>Unlimited App Usage</p>
+    <button type="button">Sign Up</button>
+
+
+    <h3>Labrador</h3>
+    <h2>$49 / mo</h2>
+    <p>Unlimited Matches</p>
+    <p>Unlimited Messages</p>
+    <p>Unlimited App Usage</p>
+    <button type="button">Sign Up</button>
+
+
+    <h3>Mastiff</h3>
+    <h2>$99 / mo</h2>
+    <p>Pirority Listing</p>
+    <p>Unlimited Matches</p>
+    <p>Unlimited Messages</p>
+    <p>Unlimited App Usage</p>
+    <button type="button">Sign Up</button>
+
+  </section>
+
+
+  <!-- Call to Action -->
+
+  <section id="cta">
+
+    <h3>Find the True Love of Your Dog's Life Today.</h3>
+    <button type="button">Download</button>
+    <button type="button">Download</button>
+
+  </section>
+
+
+  <!-- Footer -->
+
+  <footer id="footer">
+
+    <p>© Copyright 2018 TinDog</p>
+
+  </footer>
+
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 
   <script src="main.js"></script>
 </body>

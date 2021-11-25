@@ -31,7 +31,10 @@ p {
   color: #8f8f8f;
 }
 
-
+.logo-image1{
+  transform: scale(1.5, 1.5);
+  padding-left: 25%;
+}
 
 .container-fluid {
     padding-bottom: 15%;
@@ -67,14 +70,14 @@ p {
 .download-button1 {
   position: absolute;
   left:150px;
-  top:400px;
+  top:1100px;
   margin: 5% 3% 5% 0;
 }
 
 .download-button2 {
   position: absolute;
   left:350px;
-  top:400px;
+  top:1100px;
   margin: 5% 3% 5% 0;
 }
 
