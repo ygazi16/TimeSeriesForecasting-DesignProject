@@ -1,0 +1,14 @@
+from flask import Flask, render_template
+import pandas as pd
+
+app = Flask(__name__)
+
+
+@app.route("/")
+def home():
+    data = pd.read_csv('DailyDelhiClimateTrain.csv')
+
+    labels = [row[0] for row in data]
+    values = [row[1] for row in data]
+
+    return render_template("VAR.html", labels=labels, values=values)
