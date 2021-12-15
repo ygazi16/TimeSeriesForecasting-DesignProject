@@ -1,0 +1,55 @@
+def additionaldates(csvfile, nadditions):
+    datecol = csvfile.head()
+    firstdate = datecol.index[0]
+    seconddate = datecol.index[1]
+    diff = seconddate - firstdate
+    print("Difference as days: ", diff)
+    lastdate = datecol.index[-1]
+    print("last date: ", lastdate)
+    listofdates = []
+    for index in range(nadditions):
+        added = lastdate + diff
+        listofdates.append(added)
+        lastdate = listofdates[index]
+    return listofdates
+
+
+def convert_to_datetime(df):
+    try:
+        df['date'] = pd.to_datetime(df['date'], format='%m/%d/%Y')
+    except:
+        pass
+
+    try:
+        df['date'] = pd.to_datetime(df['date'], format='%Y/%m/%d')
+    except:
+        pass
+
+    try:
+        df['date'] = pd.to_datetime(df['date'], format='%Y/%d/%m')
+    except:
+        pass
+
+    try:
+        df['date'] = pd.to_datetime(df['date'], format='%d/%m/%Y')
+    except:
+        pass
+
+    try:
+        df['date'] = pd.to_datetime(df['date'], format='%d/%Y/%m')
+    except:
+        pass
+
+    try:
+        df['date'] = pd.to_datetime(df['date'], format='%m/%Y/%d')
+    except:
+        pass
+
+
+data = pd.read_csv('DailyDelhiClimateTrain.csv', header=0)
+convert_to_datetime(data)
+values = data.values
+data = data.set_index('date')
+print(data)
+
+print(additionaldates(data, 50))
