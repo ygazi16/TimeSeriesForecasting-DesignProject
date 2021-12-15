@@ -4,6 +4,7 @@ from app import app, db
 from flask import render_template, url_for, flash, redirect, request
 from app.forms import LoginForm, RegistrationForm, UploadForm
 from flask_login import login_user, current_user, logout_user, login_required
+import csv
 
 @app.route("/home")
 @app.route("/")
@@ -63,12 +64,49 @@ def profile():
     if form.validate_on_submit():
         if form.file.data:
            uploaded_file = save_file(form.file.data)
-           current_user.csv_file = uploaded_file        
-        db.session.commit()
-        flash('Your file has been loaded!', 'success')
+           current_user.csv_file = uploaded_file      
+           db.session.commit()
+           flash('Your file has been loaded!', 'success')
+        else:
+            flash('You did not upload any file!', 'danger')
         return redirect(url_for('profile'))    
     return render_template('profile.html', title='Profile',
                            form=form)
 
    # profile_pic = url_for('static', filename='profile picture/anon.jpg')
    # return render_template('profile.html', title='My Profile')
+
+from app.graph import deneme, logicalInformationGraph
+
+
+@app.route("/graph",methods=['GET', 'POST'])
+def graph():  
+    data = deneme()
+    info= logicalInformationGraph()
+    information = []
+    information.append(info)
+
+    
+    legend = "data for " + current_user.csv_file
+    labels = []
+    values = []
+
+    
+    print(current_user.csv_file)
+    for row in data:
+        labels.append(row[0])
+        values.append(row[1])
+    return render_template('graph.html', title="My Graphs", values=values, labels=labels, legend=legend, information=information)
+
+
+
+
+    
+
+
+
+
+
+
+
+
