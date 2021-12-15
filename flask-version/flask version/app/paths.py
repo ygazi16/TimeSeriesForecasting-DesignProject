@@ -77,25 +77,27 @@ def profile():
    # return render_template('profile.html', title='My Profile')
 
 from app.graph import deneme, logicalInformationGraph
+from app.Univariate_forecasting import forecast_algorithm, graphVal
+
 
 
 @app.route("/graph",methods=['GET', 'POST'])
 def graph():  
-    data = deneme()
+    data = forecast_algorithm("xgb", 50)
     info= logicalInformationGraph()
     information = []
     information.append(info)
 
     
     legend = "data for " + current_user.csv_file
-    labels = []
-    values = []
+    labels = range(len(data))
+    values = data
 
     
     print(current_user.csv_file)
-    for row in data:
+    """for row in data:
         labels.append(row[0])
-        values.append(row[1])
+        values.append(row[1])"""
     return render_template('graph.html', title="My Graphs", values=values, labels=labels, legend=legend, information=information)
 
 

@@ -53,6 +53,6 @@ class UploadForm(FlaskForm):
     file = FileField("Upload Your File Here", validators=[FileAllowed(["csv"])])
     upload = SubmitField('Upload')
 
-class GraphForm(FlaskForm):
+"""class GraphForm(FlaskForm):
     days =  StringField()
-    models= StringField()
+    models= StringField()"""
