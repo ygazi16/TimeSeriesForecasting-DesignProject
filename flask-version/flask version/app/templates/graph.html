@@ -46,18 +46,44 @@
     
     
     <!-- bar chart canvas element -->
-    
+    s
     <main role="main" class="container">
         <h1>My Graphs</h1>
         <div class="row">
           <div class="col-md-8">
-            <canvas id="myChart" width="600" height="400"></canvas>
-            <p id="caption">Here is a graph for your predicted data
+            <canvas id="myChart" width="700" height="400"></canvas>
+            <p id="caption">Here is a graph for your predicted data, don't worry you can change the days to see a different graph
             </p> 
-            <p id= "caption2"> Errors {{ information }}
-
+            <p id= "caption2"> Error rate {{ information }}
             </p>
+            
+            <form method="POST" action="" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                  <h5 class="card-subtitle mb-2">Days</h5>
+                  <ul class="list-group list-group-flush">
+                    <div class="form-group">
+                        {{ form.days.label() }}
+                        {{ form.days(class="form-control-file") }}
+                        {% if form.days.errors %}
+                            {% for error in form.days.errors %}
+                                <span class="text-danger">{{ error }}</span></br>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    
+                  </ul>
+                </fieldset>
+                <div class="form-group">
+                    {{ form.upload(class="btn btn-outline-info") }}
+                </div>
+           </form>
+    
+            
+            
+          
           </div>
+        
           <div class="col-md-4">
             <div class="content-section">
               <h3>TSF Sidebar</h3>
