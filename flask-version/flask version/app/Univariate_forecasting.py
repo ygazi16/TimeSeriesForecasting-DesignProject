@@ -8,7 +8,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 import pandas as pd
 
-
 # transform a time series dataset into a supervised learning dataset
 def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
     n_vars = 1 if type(data) is list else data.shape[1]
@@ -97,8 +96,12 @@ for i in range(len(past_and_forecasted_values)):
     plt.scatter(i, past_and_forecasted_values[i], c=col[i], s=10,
                 linewidth=0)
 
-def graphVal():
-    return past_and_forecasted_values
+
+def graphVal(name):
+    a = name
+    print(a)
+
+
 
 """plt.ylabel("Prices")
 plt.xlabel("Data points")

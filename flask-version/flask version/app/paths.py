@@ -2,7 +2,7 @@ from app.models import User,Graph
 import os
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request
-from app.forms import LoginForm, RegistrationForm, UploadForm
+from app.forms import LoginForm, RegistrationForm, UploadForm, GraphForm
 from flask_login import login_user, current_user, logout_user, login_required
 import csv
 
@@ -76,31 +76,42 @@ def profile():
    # profile_pic = url_for('static', filename='profile picture/anon.jpg')
    # return render_template('profile.html', title='My Profile')
 
-from app.graph import deneme, logicalInformationGraph
+
 from app.Univariate_forecasting import forecast_algorithm, graphVal
 
 
 
 @app.route("/graph",methods=['GET', 'POST'])
-def graph():  
-    data = forecast_algorithm("xgb", 50)
-    info= logicalInformationGraph()
-    information = []
-    information.append(info)
-
+def graph():
+    form = GraphForm()
+    if form.validate_on_submit():
+        if form.days.data:
+           n = form.days.data
+           data = forecast_algorithm("xgb", n)
+           flash('Your days has been changed', 'success')
+        else:
+            flash('You did not choose any days!', 'danger')
+    else:
+        data = forecast_algorithm("xgb", 50)    
     
+    
+    information = 50
+
+        
     legend = "data for " + current_user.csv_file
     labels = range(len(data))
     values = data
 
+    hey = current_user.csv_file
+    graphVal(hey)
+    #print(hey + "path")
+
     
-    print(current_user.csv_file)
+    
     """for row in data:
         labels.append(row[0])
         values.append(row[1])"""
-    return render_template('graph.html', title="My Graphs", values=values, labels=labels, legend=legend, information=information)
-
-
+    return render_template('graph.html', title="My Graphs", form=form, values=values, labels=labels, legend=legend, information=information)
 
 
     

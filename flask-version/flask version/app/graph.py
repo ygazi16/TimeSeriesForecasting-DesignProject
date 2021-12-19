@@ -1,4 +1,3 @@
-  
 # Function to calculate the sum of array
 class DataArray(object):
    
@@ -16,9 +15,6 @@ class DataArray(object):
         #to print the err rate for each data
         
         return graph_data
-
-
-
 
 
 def deneme():   
@@ -59,6 +55,7 @@ def logicalInformationGraph():
     return error_rates
         
 
+  
     
 
 
