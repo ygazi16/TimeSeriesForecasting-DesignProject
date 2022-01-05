@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Download Page</h1>
+    <form method="POST" action="" enctype="multipart/form-data">
+
+            <fieldset class="form-group">
+              <h5 class="card-subtitle mb-2">Download File</h5>
+              <ul class="list-group list-group-flush">
+                <div class="form-group">
+
+                </div>
+
+              </ul>
+            </fieldset>
+            <div class="form-group">
+                {{ form2.download(class="btn btn-outline-info") }}
+            </div>
+        </form>
+{% endblock content %}
+
